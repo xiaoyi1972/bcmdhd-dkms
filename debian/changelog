@@ -1,3 +1,9 @@
+bcmdhd (101.10.591.52.27-6) stable; urgency=medium
+
+  * fix api change since v6.17
+
+ -- Alexey Belyaev <spider@spider.vc>  Wed, 08 Oct 2025 23:55:31 +0600
+
 bcmdhd (101.10.591.52.27-5) stable; urgency=medium
 
   * fix api change of del_timer since v6.15
