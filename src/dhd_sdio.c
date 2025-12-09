@@ -9414,6 +9414,7 @@ dhd_bus_watchdog(dhd_pub_t *dhdp)
 	return bus->ipend;
 }
 
+#if defined(BCMSDIO)
 extern int
 dhd_bus_console_in(dhd_pub_t *dhdp, uchar *msg, uint msglen)
 {
@@ -9502,6 +9503,8 @@ exit:
 #endif
 	return rv;
 }
+
+#endif /* BCMSDIO */
 
 #ifdef CONSOLE_DPC
 extern int

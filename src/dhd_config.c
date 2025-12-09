@@ -1375,7 +1375,7 @@ dhd_conf_set_tput_patch(dhd_pub_t *dhd)
 #if defined(SET_XPS_CPUS)
 		conf->xps_cpus = TRUE;
 #endif /* SET_XPS_CPUS */
-#if defined(SET_RPS_CPUS)
+#if defined(SET_RPS_CPUS) && defined(CONFIG_RPS) && defined(RPS_MAP_SIZE)
 		conf->rps_cpus = TRUE;
 #endif /* SET_RPS_CPUS */
 		conf->orphan_move = 3;
@@ -1403,7 +1403,7 @@ dhd_conf_set_tput_patch(dhd_pub_t *dhd)
 #if defined(SET_XPS_CPUS)
 		conf->xps_cpus = FALSE;
 #endif /* SET_XPS_CPUS */
-#if defined(SET_RPS_CPUS)
+#if defined(SET_RPS_CPUS) && defined(CONFIG_RPS)
 		conf->rps_cpus = FALSE;
 #endif /* SET_RPS_CPUS */
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 1, 0))
@@ -1453,7 +1453,7 @@ dhd_conf_dump_tput_patch(dhd_pub_t *dhd)
 #if defined(SET_XPS_CPUS)
 	CONFIG_TRACE("xps_cpus=%d\n", conf->xps_cpus);
 #endif
-#if defined(SET_RPS_CPUS)
+#if defined(SET_RPS_CPUS) && defined(CONFIG_RPS)
 	CONFIG_TRACE("rps_cpus=%d\n", conf->rps_cpus);
 #endif
 

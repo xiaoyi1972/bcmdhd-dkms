@@ -53,6 +53,9 @@
 #include <linux/reboot.h>
 #include <linux/notifier.h>
 #include <linux/irq.h>
+#ifdef CONFIG_RPS
+#include <net/rps.h>
+#endif
 #if defined(CONFIG_TIZEN)
 #include <linux/net_stat_tizen.h>
 #endif /* CONFIG_TIZEN */
@@ -7358,7 +7361,7 @@ dhd_pri_open(struct net_device *net)
 	dhd_tx_start_queues(net);
 	WL_MSG(net->name, "tx queue started\n");
 
-#if defined(SET_RPS_CPUS)
+#if defined(SET_RPS_CPUS) && defined(CONFIG_RPS) && defined(RPS_MAP_SIZE)
 	dhd_rps_cpus_enable(net, TRUE);
 #endif
 
@@ -8095,7 +8098,7 @@ dhd_remove_if(dhd_pub_t *dhdpub, int ifidx, bool need_rtnl_lock)
 			} else {
 				netif_tx_disable(ifp->net);
 
-#if defined(SET_RPS_CPUS)
+#if defined(SET_RPS_CPUS) && defined(CONFIG_RPS)
 				custom_rps_map_clear(ifp->net->_rx);
 #endif /* SET_RPS_CPUS */
 #if (defined(BCM_ROUTER_DHD) && defined(HNDCTF))
@@ -20981,7 +20984,7 @@ void custom_xps_map_clear(struct net_device *net)
 }
 #endif // endif
 
-#if defined(SET_RPS_CPUS)
+#if defined(SET_RPS_CPUS) && defined(CONFIG_RPS)
 int dhd_rps_cpus_enable(struct net_device *net, int enable)
 {
 	dhd_info_t *dhd = DHD_DEV_INFO(net);
@@ -22257,7 +22260,7 @@ dhd_print_kirqstats(dhd_pub_t *dhd, unsigned int irq_num)
 	bcm_bprintf(&strbuf, "dhd irq %u:", irq_num);
 	for_each_online_cpu(i)
 		bcm_bprintf(&strbuf, "%10u ",
-			desc->kstat_irqs ? *per_cpu_ptr(desc->kstat_irqs, i) : 0);
+			irq_desc_kstat_cpu(desc, i));
 	if (desc->irq_data.chip) {
 		if (desc->irq_data.chip->name)
 			bcm_bprintf(&strbuf, " %8s", desc->irq_data.chip->name);

@@ -12,7 +12,36 @@
 #include <sbchipc.h>
 #include <pcie_core.h>
 #include <dhd_pcie.h>
-#include <linux/aspm_ext.h>
+/* linux/aspm_ext.h is not present in all kernels. Use it when available,
+ * otherwise provide no-op stubs so build can proceed on kernels without it.
+ */
+#if defined(__has_include)
+# if __has_include(<linux/aspm_ext.h>)
+#  include <linux/aspm_ext.h>
+#  define RK_HAVE_ASPM_EXT 1
+# else
+#  define RK_HAVE_ASPM_EXT 0
+# endif
+#else
+# define RK_HAVE_ASPM_EXT 0
+#endif
+
+#if !RK_HAVE_ASPM_EXT
+/* Provide minimal no-op stubs for the aspm_ext APIs used by this driver. */
+static inline void pcie_aspm_ext_l1ss_enable(struct pci_dev *dev, void *rc_dev, bool enable)
+{
+}
+
+static inline bool pcie_aspm_ext_is_rc_ep_l1ss_capable(struct pci_dev *dev, void *rc_dev)
+{
+	return false;
+}
+
+static inline bool pcie_aspm_ext_is_in_l1sub_state(void *rc_dev)
+{
+	return false;
+}
+#endif
 
 static inline void
 rk_dhd_bus_l1ss_enable_rc_ep(dhd_bus_t *bus, bool enable)

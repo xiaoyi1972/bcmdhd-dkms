@@ -87,8 +87,31 @@
 
 #include <dhd_plat.h>
 
+/* Rockchip-specific ASPM extension header may be absent in some kernel headers.
+ * Include only when available; otherwise rk_dhd_pcie_linux.h supplies stubs.
+ */
 #ifdef CONFIG_ARCH_ROCKCHIP
-#include <linux/aspm_ext.h>
+# if defined(__has_include)
+#  if __has_include(<linux/aspm_ext.h>)
+#   include <linux/aspm_ext.h>
+#  endif
+# endif
+#endif
+
+/* Some kernels may not provide Rockchip-specific PCIe PM helpers.
+ * Provide fallbacks when missing so the driver can build on non-RK or
+ * older RK kernel headers.
+ */
+#ifdef CONFIG_ARCH_ROCKCHIP
+# ifndef ROCKCHIP_PCIE_PM_CTRL_RESET
+#  define ROCKCHIP_PCIE_PM_CTRL_RESET 0
+# endif
+# ifndef rockchip_dw_pcie_pm_ctrl_for_user
+static inline int rockchip_dw_pcie_pm_ctrl_for_user(struct pci_dev *dev, int ctrl)
+{
+	return 0;
+}
+# endif
 #endif
 
 #define PCI_CFG_RETRY		10		/* PR15065: retry count for pci cfg accesses */

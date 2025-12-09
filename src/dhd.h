@@ -3904,7 +3904,7 @@ int custom_xps_map_set(struct net_device *net, char *buf, size_t len);
 void custom_xps_map_clear(struct net_device *net);
 #endif
 
-#if defined(SET_RPS_CPUS)
+#if defined(SET_RPS_CPUS) && defined(CONFIG_RPS) && defined(RPS_MAP_SIZE)
 int dhd_rps_cpus_enable(struct net_device *net, int enable);
 int custom_rps_map_set(struct netdev_rx_queue *queue, char *buf, size_t len);
 void custom_rps_map_clear(struct netdev_rx_queue *queue);

@@ -6262,6 +6262,7 @@ dhd_bus_start_queue(struct dhd_bus *bus)
 }
 
 /* Device console input function */
+#if defined(BCMPCIE)
 int dhd_bus_console_in(dhd_pub_t *dhd, uchar *msg, uint msglen)
 {
 	dhd_bus_t *bus = dhd->bus;
@@ -6331,6 +6332,8 @@ BCMFASTPATH(dhd_bus_rx_frame)(struct dhd_bus *bus, void* pkt, int ifidx, uint pk
 {
 	dhd_rx_frame(bus->dhd, ifidx, pkt, pkt_count, 0);
 }
+
+#endif /* BCMPCIE */
 
 /* Aquire/Release bar1_switch_lock only if the chip supports bar1 switching */
 #define DHD_BUS_BAR1_SWITCH_LOCK(bus, flags) \
